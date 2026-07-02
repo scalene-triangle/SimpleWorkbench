@@ -1,0 +1,8 @@
+{
+  "name": "simple-workbench-web",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "test": "node -e \"console.error('Frontend tests not configured'); process.exit(1)\""
+  }
+}

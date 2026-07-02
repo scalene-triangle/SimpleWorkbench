@@ -1,0 +1,30 @@
+## .NET build artifacts
+bin/
+obj/
+
+## User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Test and coverage outputs
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+## Node artifacts
+node_modules/
+dist/
+.vite/
+
+## IDE
+.vs/
+.vscode/
+.idea/
+
+## OS files
+.DS_Store
+Thumbs.db
+
