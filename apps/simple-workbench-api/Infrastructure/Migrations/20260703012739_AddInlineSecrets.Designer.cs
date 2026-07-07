@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SimpleWorkbench.Api.Infrastructure.Persistence;
 
@@ -10,9 +11,11 @@ using SimpleWorkbench.Api.Infrastructure.Persistence;
 namespace SimpleWorkbench.Api.Infrastructure.Migrations
 {
     [DbContext(typeof(SimpleWorkbenchDbContext))]
-    partial class SimpleWorkbenchDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260703012739_AddInlineSecrets")]
+    partial class AddInlineSecrets
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

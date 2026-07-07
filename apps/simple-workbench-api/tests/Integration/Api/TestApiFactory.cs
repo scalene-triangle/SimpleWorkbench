@@ -12,6 +12,9 @@ public sealed class TestApiFactory : WebApplicationFactory<SimpleWorkbench.Api.P
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseSetting("DatabaseProvider", "Sqlite");
+        builder.UseSetting("ConnectionStrings:SimpleWorkbench", $"Data Source={_dbPath}");
+
         builder.ConfigureAppConfiguration((_, configBuilder) =>
         {
             configBuilder.AddInMemoryCollection(
@@ -37,7 +40,14 @@ public sealed class TestApiFactory : WebApplicationFactory<SimpleWorkbench.Api.P
         {
             if (File.Exists(_dbPath))
             {
-                File.Delete(_dbPath);
+                try
+                {
+                    File.Delete(_dbPath);
+                }
+                catch (IOException)
+                {
+                    // Best-effort cleanup for test database file.
+                }
             }
         }
 

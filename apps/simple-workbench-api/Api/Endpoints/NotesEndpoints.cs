@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SimpleWorkbench.Api.Application.Secrets;
 using SimpleWorkbench.Api.Infrastructure.Persistence;
 using SimpleWorkbench.Api.Infrastructure.Persistence.Records;
 
@@ -45,10 +46,23 @@ public static class NotesEndpoints
             return Results.Ok(new NoteResponse(note.Id, note.Title, note.Version));
         });
 
+        group.MapGet("/notes/{noteId}/secrets/{secretId}", async (string noteId, string secretId, SimpleWorkbenchDbContext db) =>
+        {
+            var secret = await db.InlineSecrets.SingleOrDefaultAsync(x => x.NoteId == noteId && x.Id == secretId);
+            if (secret is null)
+            {
+                return Results.NotFound();
+            }
+
+            var response = new SecretResponse(secret.Id, secret.SecretKey, InlineSecretService.Mask(secret.SecretValue));
+            return Results.Ok(response);
+        });
+
         return app;
     }
 
     public sealed record CreateNoteRequest(string Title);
     public sealed record UpdateNoteRequest(string Title, int Version);
     public sealed record NoteResponse(string Id, string Title, int Version);
+    public sealed record SecretResponse(string Id, string SecretKey, string MaskedValue);
 }
