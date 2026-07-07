@@ -1,0 +1,10 @@
+{
+  "name": "@simple-workbench/note-builder",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "main": "./src/NoteBuilder.tsx",
+  "scripts": {
+    "test": "vitest run --environment jsdom"
+  }
+}
