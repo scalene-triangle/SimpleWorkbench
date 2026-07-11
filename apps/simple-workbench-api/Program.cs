@@ -29,6 +29,7 @@ builder.Services.AddDbContext<SimpleWorkbenchDbContext>(options =>
 var app = builder.Build();
 app.MapGet("/health", () => Results.Ok("ok"));
 app.MapNotesEndpoints();
+app.MapHomeEndpoints();
 app.Run();
 
 namespace SimpleWorkbench.Api
