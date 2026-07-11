@@ -23,7 +23,7 @@ function renderNodes(nodes: ManualTreeNode[]) {
 
 export function ManualTree({ nodes }: ManualTreeProps) {
   return (
-    <aside aria-label="Manual Tree">
+    <aside aria-label="Manual Tree" className="sidebar-panel">
       <h3>Manual Tree</h3>
       {renderNodes(nodes)}
     </aside>

@@ -6,11 +6,14 @@ type SmartFiltersProps = {
 
 export function SmartFilters({ tags, priorities, statuses }: SmartFiltersProps) {
   return (
-    <aside aria-label="Smart Filters">
+    <aside aria-label="Smart Filters" className="sidebar-panel">
       <h3>Smart Filters</h3>
 
       <section>
         <h4>Saved</h4>
+        <ul>
+          <li>Saved</li>
+        </ul>
       </section>
 
       <section>

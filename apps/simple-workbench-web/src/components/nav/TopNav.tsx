@@ -1,8 +1,10 @@
 export function TopNav() {
   return (
-    <header>
+    <header className="top-nav">
       <nav aria-label="Global Navigation">
-        <a href="/">Home</a>
+        <a className="top-nav__brand" href="/">
+          Simple Workbench
+        </a>
       </nav>
     </header>
   );
