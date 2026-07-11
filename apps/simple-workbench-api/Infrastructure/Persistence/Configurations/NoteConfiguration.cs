@@ -13,6 +13,8 @@ public sealed class NoteConfiguration : IEntityTypeConfiguration<NoteRecord>
         builder.Property(x => x.Id).HasMaxLength(64);
         builder.Property(x => x.Title).HasMaxLength(300).IsRequired();
         builder.Property(x => x.SpaceId).HasMaxLength(64).IsRequired(false);
+        builder.Property(x => x.DocumentJson).IsRequired();
+        builder.Property(x => x.SearchText).IsRequired();
         builder.Property(x => x.Version).IsRequired().HasDefaultValue(1).IsConcurrencyToken();
         builder.Property(x => x.IsSaved).IsRequired().HasDefaultValue(false);
         builder.Property(x => x.LastViewedAt).IsRequired(false);
