@@ -6,7 +6,7 @@ using SimpleWorkbench.Api.Infrastructure.Persistence;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("SimpleWorkbench")
-    ?? "Server=(localdb)\\mssqllocaldb;Database=SimpleWorkbench;Trusted_Connection=True;TrustServerCertificate=True";
+    ?? throw new InvalidOperationException("Connection string 'SimpleWorkbench' was not found.");
 
 var databaseProvider = builder.Configuration["DatabaseProvider"];
 if (string.IsNullOrWhiteSpace(databaseProvider))

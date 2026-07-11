@@ -4,10 +4,21 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "node -e \"const http=require('http'); const port=process.env.PORT||5173; const html='<!doctype html><html><body><h1>Simple Workbench</h1></body></html>'; http.createServer((_,res)=>{res.writeHead(200,{'Content-Type':'text/html'});res.end(html);}).listen(port,'0.0.0.0');\"",
-    "test": "vitest run --environment jsdom"
+    "dev": "node ./scripts/dev.mjs",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 4173",
+    "test": "npx vitest run --environment jsdom"
   },
   "dependencies": {
-    "@simple-workbench/note-builder": "*"
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "@simple-workbench/note-builder": "file:../../packages/note-builder"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.2",
+    "@types/react-dom": "^19.2.2",
+    "@vitejs/plugin-react": "^5.1.0",
+    "typescript": "^5.9.2",
+    "vite": "^8.1.3"
   }
 }
