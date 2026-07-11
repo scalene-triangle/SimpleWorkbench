@@ -8,4 +8,8 @@
     <UserSecretsId>5eed415e-49a7-465f-99d8-2afaeda63108</UserSecretsId>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\apps\simple-workbench-api\SimpleWorkbench.Api.csproj" />
+  </ItemGroup>
+
 </Project>

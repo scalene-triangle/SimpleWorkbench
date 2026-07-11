@@ -5,6 +5,9 @@
     "apps/*",
     "packages/*"
   ],
+  "scripts": {
+    "test": "npm --prefix \"apps/simple-workbench-web\" run test && npm --prefix \"packages/note-builder\" run test"
+  },
   "dependencies": {
     "@playwright/test": "^1.61.1",
     "@testing-library/react": "^16.3.2",
