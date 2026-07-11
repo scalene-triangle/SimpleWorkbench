@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SimpleWorkbench.Api.Application.Search;
 using SimpleWorkbench.Api.Api.Endpoints;
 using SimpleWorkbench.Api.Infrastructure.Persistence;
 
@@ -25,11 +26,13 @@ builder.Services.AddDbContext<SimpleWorkbenchDbContext>(options =>
 
     options.UseSqlServer(connectionString);
 });
+builder.Services.AddScoped<LexicalSearchService>();
 
 var app = builder.Build();
 app.MapGet("/health", () => Results.Ok("ok"));
 app.MapNotesEndpoints();
 app.MapHomeEndpoints();
+app.MapSearchEndpoints();
 app.Run();
 
 namespace SimpleWorkbench.Api
