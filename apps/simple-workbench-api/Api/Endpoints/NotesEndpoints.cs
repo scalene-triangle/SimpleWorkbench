@@ -17,13 +17,29 @@ public static class NotesEndpoints
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Title = request.Title,
+                DocumentJson = """{"items":[]}""",
+                SearchText = request.Title,
                 Version = 1
             };
 
             db.Notes.Add(note);
             await db.SaveChangesAsync();
 
-            return Results.Created($"/api/notes/{note.Id}", new NoteResponse(note.Id, note.Title, note.Version));
+            return Results.Created($"/api/notes/{note.Id}", ToNoteResponse(note));
+        });
+
+        group.MapGet("/notes/{id}", async (string id, SimpleWorkbenchDbContext db) =>
+        {
+            var note = await db.Notes.SingleOrDefaultAsync(x => x.Id == id);
+            if (note is null)
+            {
+                return Results.NotFound();
+            }
+
+            note.LastViewedAt = DateTimeOffset.UtcNow;
+            await db.SaveChangesAsync();
+
+            return Results.Ok(ToNoteResponse(note));
         });
 
         group.MapPut("/notes/{id}", async (string id, UpdateNoteRequest request, SimpleWorkbenchDbContext db) =>
@@ -40,10 +56,28 @@ public static class NotesEndpoints
             }
 
             note.Title = request.Title;
+            note.DocumentJson = string.IsNullOrWhiteSpace(request.DocumentJson) ? note.DocumentJson : request.DocumentJson;
+            note.SearchText = string.IsNullOrWhiteSpace(request.SearchText) ? request.Title : request.SearchText;
+            note.IsSaved = request.IsSaved ?? note.IsSaved;
             note.Version += 1;
             await db.SaveChangesAsync();
 
-            return Results.Ok(new NoteResponse(note.Id, note.Title, note.Version));
+            return Results.Ok(ToNoteResponse(note));
+        });
+
+        group.MapPatch("/notes/{id}/saved", async (string id, UpdateSavedRequest request, SimpleWorkbenchDbContext db) =>
+        {
+            var note = await db.Notes.SingleOrDefaultAsync(x => x.Id == id);
+            if (note is null)
+            {
+                return Results.NotFound();
+            }
+
+            note.IsSaved = request.IsSaved;
+            note.Version += 1;
+            await db.SaveChangesAsync();
+
+            return Results.Ok(ToNoteResponse(note));
         });
 
         group.MapGet("/notes/{noteId}/secrets/{secretId}", async (string noteId, string secretId, SimpleWorkbenchDbContext db) =>
@@ -61,8 +95,12 @@ public static class NotesEndpoints
         return app;
     }
 
+    private static NoteResponse ToNoteResponse(NoteRecord note) =>
+        new(note.Id, note.Title, note.Version, note.DocumentJson, note.SearchText, note.IsSaved);
+
     public sealed record CreateNoteRequest(string Title);
-    public sealed record UpdateNoteRequest(string Title, int Version);
-    public sealed record NoteResponse(string Id, string Title, int Version);
+    public sealed record UpdateNoteRequest(string Title, int Version, string? DocumentJson, string? SearchText, bool? IsSaved);
+    public sealed record UpdateSavedRequest(bool IsSaved);
+    public sealed record NoteResponse(string Id, string Title, int Version, string DocumentJson, string SearchText, bool IsSaved);
     public sealed record SecretResponse(string Id, string SecretKey, string MaskedValue);
 }

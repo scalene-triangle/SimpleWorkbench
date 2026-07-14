@@ -1,20 +1,15 @@
 import { TopNav } from "../components/nav/TopNav";
 import { ManualTree } from "../components/sidebar/ManualTree";
 import { SmartFilters } from "../components/sidebar/SmartFilters";
+import type { HomeDto, HomeItem } from "../api";
 
-type HomeSpace = { id: string; name: string };
-type HomeItem = { id: string; title: string };
-
-export type HomePageData = {
-  spaces: HomeSpace[];
-  savedNotes: HomeItem[];
-  recentNotes: HomeItem[];
-  globalNotes: HomeItem[];
-};
+export type HomePageData = HomeDto;
 
 type HomePageProps = {
   data: HomePageData;
   notice?: string | null;
+  onCreateNote: () => void;
+  onOpenNote: (noteId: string) => void;
 };
 
 function SectionList({ title, items }: { title: string; items: HomeItem[] }) {
@@ -34,10 +29,10 @@ function SectionList({ title, items }: { title: string; items: HomeItem[] }) {
   );
 }
 
-export function HomePage({ data, notice }: HomePageProps) {
+export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePageProps) {
   return (
     <div className="app-shell">
-      <TopNav />
+      <TopNav onCreateNote={onCreateNote} />
       <main className="page-layout">
         <aside className="sidebar">
           <ManualTree
@@ -68,7 +63,22 @@ export function HomePage({ data, notice }: HomePageProps) {
           </section>
           <SectionList title="Saved Notes" items={data.savedNotes} />
           <SectionList title="Recent Notes" items={data.recentNotes} />
-          <SectionList title="Global Notes" items={data.globalNotes} />
+          <section className="content-card">
+            <h2>Global Notes</h2>
+            {data.globalNotes.length === 0 ? (
+              <p className="empty-text">No data available.</p>
+            ) : (
+              <ul>
+                {data.globalNotes.map((note) => (
+                  <li key={note.id}>
+                    <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
+                      {note.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
         </section>
       </main>
     </div>

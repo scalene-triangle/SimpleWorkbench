@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
+import { createNote, getHome, getNote, updateNote, updateSaved, type HomeDto, type NoteDto } from "./api";
 import { HomePage, type HomePageData } from "./pages/HomePage";
+import { NotePage } from "./pages/NotePage";
 
-const homeFixture: HomePageData = {
+const homeFixture: HomeDto = {
   spaces: [{ id: "s1", name: "Main Space" }],
   savedNotes: [{ id: "n1", title: "Saved note" }],
   recentNotes: [{ id: "n2", title: "Recent note" }],
@@ -9,44 +11,41 @@ const homeFixture: HomePageData = {
 };
 
 type LoadState = "loading" | "ready" | "error";
+type ViewState = { type: "home" } | { type: "note"; noteId: string };
 
 export function App() {
   const [state, setState] = useState<LoadState>("loading");
   const [data, setData] = useState<HomePageData>(homeFixture);
+  const [view, setView] = useState<ViewState>({ type: "home" });
+  const [note, setNote] = useState<NoteDto | null>(null);
   const [message, setMessage] = useState<string | null>(null);
 
+  const loadHome = async () => {
+    try {
+      const payload = await getHome();
+      setData(payload);
+      setState("ready");
+      setMessage(null);
+    } catch {
+      setData(homeFixture);
+      setState("error");
+      setMessage("API is currently unavailable. Showing local fixture data.");
+    }
+  };
+
+  const loadNote = async (noteId: string) => {
+    try {
+      const payload = await getNote(noteId);
+      setNote(payload);
+      setMessage(null);
+      setView({ type: "note", noteId });
+    } catch {
+      setMessage("Unable to load note.");
+    }
+  };
+
   useEffect(() => {
-    let active = true;
-
-    const loadHome = async () => {
-      try {
-        const response = await fetch("/api/home", { headers: { Accept: "application/json" } });
-        if (!response.ok) {
-          throw new Error(`Home endpoint returned ${response.status}`);
-        }
-
-        const payload = (await response.json()) as HomePageData;
-        if (!active) {
-          return;
-        }
-
-        setData(payload);
-        setState("ready");
-      } catch {
-        if (!active) {
-          return;
-        }
-
-        setData(homeFixture);
-        setState("error");
-        setMessage("API is currently unavailable. Showing local fixture data.");
-      }
-    };
-
     void loadHome();
-    return () => {
-      active = false;
-    };
   }, []);
 
   if (state === "loading") {
@@ -58,5 +57,48 @@ export function App() {
     );
   }
 
-  return <HomePage data={data} notice={message} />;
+  if (view.type === "note" && note) {
+    return (
+      <NotePage
+        note={note}
+        onBack={async () => {
+          setView({ type: "home" });
+          await loadHome();
+        }}
+        onSave={async (title) => {
+          const updated = await updateNote({
+            ...note,
+            title,
+            searchText: title
+          });
+          setNote(updated);
+          await loadHome();
+        }}
+        onToggleSaved={async (isSaved) => {
+          const updated = await updateSaved(note.id, isSaved);
+          setNote(updated);
+          await loadHome();
+        }}
+      />
+    );
+  }
+
+  return (
+    <HomePage
+      data={data}
+      notice={message}
+      onCreateNote={async () => {
+        try {
+          const created = await createNote("Untitled note");
+          await loadHome();
+          await loadNote(created.id);
+        } catch {
+          setMessage("Unable to create note.");
+        }
+      }}
+      onOpenNote={(noteId) => {
+        void loadNote(noteId);
+      }}
+    />
+  );
 }

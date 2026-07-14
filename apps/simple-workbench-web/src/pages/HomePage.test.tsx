@@ -11,7 +11,7 @@ const fixture = {
 
 describe("HomePage", () => {
   it("renders global sections and fixed top nav", () => {
-    render(<HomePage data={fixture} />);
+    render(<HomePage data={fixture} onCreateNote={() => undefined} onOpenNote={() => undefined} />);
 
     expect(screen.getByRole("navigation")).toBeTruthy();
     expect(screen.getByText("Saved Notes")).toBeTruthy();

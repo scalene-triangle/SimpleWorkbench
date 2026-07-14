@@ -30,9 +30,51 @@ a {
   padding: 0 20px;
 }
 
+.top-nav__content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .top-nav__brand {
   font-size: 16px;
   font-weight: 700;
+}
+
+.primary-button,
+.secondary-button,
+.text-link-button {
+  font: inherit;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.primary-button {
+  background: #2563eb;
+  color: white;
+  padding: 8px 12px;
+}
+
+.primary-button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.secondary-button {
+  background: #ffffff;
+  color: #111827;
+  border-color: #d1d5db;
+  padding: 8px 12px;
+}
+
+.text-link-button {
+  background: transparent;
+  color: #1d4ed8;
+  border: 0;
+  padding: 0;
+  text-decoration: underline;
 }
 
 .app-shell {
@@ -92,6 +134,28 @@ a {
 .content-card ul {
   margin: 0;
   padding-left: 18px;
+}
+
+.note-layout {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.note-toolbar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.note-title-input {
+  min-width: 240px;
+  flex: 1;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
 }
 
 .notice {
