@@ -2,12 +2,19 @@ import { useEffect, useState } from "react";
 import { createNote, getHome, getNote, updateNote, updateSaved, type HomeDto, type NoteDto } from "./api";
 import { HomePage, type HomePageData } from "./pages/HomePage";
 import { NotePage } from "./pages/NotePage";
+import type { NoteItem } from "@simple-workbench/note-builder";
 
 const homeFixture: HomeDto = {
   spaces: [{ id: "s1", name: "Main Space" }],
   savedNotes: [{ id: "n1", title: "Saved note" }],
   recentNotes: [{ id: "n2", title: "Recent note" }],
-  globalNotes: [{ id: "n3", title: "Global note" }]
+  globalNotes: [{ id: "n3", title: "Global note" }],
+  smartFilters: {
+    hasSaved: true,
+    tags: [],
+    priorities: [],
+    statuses: []
+  }
 };
 
 type LoadState = "loading" | "ready" | "error";
@@ -65,10 +72,19 @@ export function App() {
           setView({ type: "home" });
           await loadHome();
         }}
-        onSave={async (title) => {
+        onSave={async (title, items) => {
+          const documentJson = JSON.stringify({
+            items: items.map((item: NoteItem) => ({
+              id: item.id,
+              type: item.type,
+              collapsed: item.collapsed
+            }))
+          });
+
           const updated = await updateNote({
             ...note,
             title,
+            documentJson,
             searchText: title
           });
           setNote(updated);

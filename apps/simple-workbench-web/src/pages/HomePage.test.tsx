@@ -6,7 +6,13 @@ const fixture = {
   spaces: [{ id: "s1", name: "Main Space" }],
   savedNotes: [{ id: "n1", title: "Saved note" }],
   recentNotes: [{ id: "n2", title: "Recent note" }],
-  globalNotes: [{ id: "n3", title: "Global note" }]
+  globalNotes: [{ id: "n3", title: "Global note" }],
+  smartFilters: {
+    hasSaved: true,
+    tags: [],
+    priorities: [],
+    statuses: []
+  }
 };
 
 describe("HomePage", () => {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { itemRegistry, type NoteItem, type NoteItemType } from "./itemRegistry";
 
 export type { NoteItem } from "./itemRegistry";
@@ -13,11 +13,20 @@ function createItem(type: NoteItemType): NoteItem {
 
 type NoteBuilderProps = {
   initialItems: NoteItem[];
+  onItemsChange?: (items: NoteItem[]) => void;
 };
 
-export function NoteBuilder({ initialItems }: NoteBuilderProps) {
+export function NoteBuilder({ initialItems, onItemsChange }: NoteBuilderProps) {
   const [items, setItems] = useState<NoteItem[]>(initialItems);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setItems(initialItems);
+  }, [initialItems]);
+
+  useEffect(() => {
+    onItemsChange?.(items);
+  }, [items, onItemsChange]);
 
   const toggleCollapsed = (id: string) => {
     setItems((current) =>

@@ -1,10 +1,11 @@
 type SmartFiltersProps = {
+  hasSaved: boolean;
   tags: string[];
   priorities: string[];
   statuses: string[];
 };
 
-export function SmartFilters({ tags, priorities, statuses }: SmartFiltersProps) {
+export function SmartFilters({ hasSaved, tags, priorities, statuses }: SmartFiltersProps) {
   return (
     <aside aria-label="Smart Filters" className="sidebar-panel">
       <h3>Smart Filters</h3>
@@ -12,7 +13,7 @@ export function SmartFilters({ tags, priorities, statuses }: SmartFiltersProps) 
       <section>
         <h4>Saved</h4>
         <ul>
-          <li>Saved</li>
+          <li>{hasSaved ? "Saved" : "No saved notes yet"}</li>
         </ul>
       </section>
 

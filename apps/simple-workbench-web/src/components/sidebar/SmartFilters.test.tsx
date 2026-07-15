@@ -4,7 +4,7 @@ import { SmartFilters } from "./SmartFilters";
 
 describe("SmartFilters", () => {
   it("shows saved and dynamic tag filters", () => {
-    render(<SmartFilters tags={["urgent"]} priorities={["P1"]} statuses={["todo"]} />);
+    render(<SmartFilters hasSaved={true} tags={["urgent"]} priorities={["P1"]} statuses={["todo"]} />);
 
     expect(screen.getByRole("heading", { name: "Saved" })).toBeTruthy();
     expect(screen.getByText("urgent")).toBeTruthy();

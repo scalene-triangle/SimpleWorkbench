@@ -6,6 +6,12 @@ export type HomeDto = {
   savedNotes: HomeItem[];
   recentNotes: HomeItem[];
   globalNotes: HomeItem[];
+  smartFilters: {
+    hasSaved: boolean;
+    tags: string[];
+    priorities: string[];
+    statuses: string[];
+  };
 };
 
 export type NoteDto = {

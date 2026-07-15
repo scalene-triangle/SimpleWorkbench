@@ -41,7 +41,12 @@ export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePagePro
               title: space.name
             }))}
           />
-          <SmartFilters tags={[]} priorities={[]} statuses={[]} />
+          <SmartFilters
+            hasSaved={data.smartFilters.hasSaved}
+            tags={data.smartFilters.tags}
+            priorities={data.smartFilters.priorities}
+            statuses={data.smartFilters.statuses}
+          />
         </aside>
         <section className="content">
           {notice ? (

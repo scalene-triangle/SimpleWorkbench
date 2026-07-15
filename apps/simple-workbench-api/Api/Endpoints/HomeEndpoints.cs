@@ -38,7 +38,13 @@ public static class HomeEndpoints
                 .Select(x => new HomeItem(x.Id, x.Title))
                 .ToListAsync();
 
-            return Results.Ok(new HomeResponse(spaces, savedNotes, recentNotes, globalNotes));
+            var smartFilters = new SmartFiltersResponse(
+                HasSaved: savedNotes.Count > 0,
+                Tags: [],
+                Priorities: [],
+                Statuses: []);
+
+            return Results.Ok(new HomeResponse(spaces, savedNotes, recentNotes, globalNotes, smartFilters));
         });
 
         return app;
@@ -50,5 +56,12 @@ public static class HomeEndpoints
         IReadOnlyList<HomeSpace> Spaces,
         IReadOnlyList<HomeItem> SavedNotes,
         IReadOnlyList<HomeItem> RecentNotes,
-        IReadOnlyList<HomeItem> GlobalNotes);
+        IReadOnlyList<HomeItem> GlobalNotes,
+        SmartFiltersResponse SmartFilters);
+
+    public sealed record SmartFiltersResponse(
+        bool HasSaved,
+        IReadOnlyList<string> Tags,
+        IReadOnlyList<string> Priorities,
+        IReadOnlyList<string> Statuses);
 }
