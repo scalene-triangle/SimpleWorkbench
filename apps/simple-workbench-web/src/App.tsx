@@ -84,8 +84,7 @@ export function App() {
           const updated = await updateNote({
             ...note,
             title,
-            documentJson,
-            searchText: title
+            documentJson
           });
           setNote(updated);
           await loadHome();

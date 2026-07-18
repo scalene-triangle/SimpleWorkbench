@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SimpleWorkbench.Api.Application.Search;
 using SimpleWorkbench.Api.Application.Secrets;
 using SimpleWorkbench.Api.Infrastructure.Persistence;
 using SimpleWorkbench.Api.Infrastructure.Persistence.Records;
@@ -55,9 +56,12 @@ public static class NotesEndpoints
                 return Results.Conflict(new { message = "Version conflict" });
             }
 
+            var documentJson = string.IsNullOrWhiteSpace(request.DocumentJson) ? note.DocumentJson : request.DocumentJson;
+            var searchText = NoteSearchTextExtractor.Extract(documentJson);
+
             note.Title = request.Title;
-            note.DocumentJson = string.IsNullOrWhiteSpace(request.DocumentJson) ? note.DocumentJson : request.DocumentJson;
-            note.SearchText = string.IsNullOrWhiteSpace(request.SearchText) ? request.Title : request.SearchText;
+            note.DocumentJson = documentJson;
+            note.SearchText = searchText;
             note.IsSaved = request.IsSaved ?? note.IsSaved;
             note.Version += 1;
             await db.SaveChangesAsync();
