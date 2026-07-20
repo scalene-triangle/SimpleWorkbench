@@ -14,16 +14,29 @@ function parseItems(documentJson: string): NoteItem[] {
   try {
     const payload = JSON.parse(documentJson) as { items?: NoteItem[] };
     if (!payload.items || !Array.isArray(payload.items) || payload.items.length === 0) {
-      return [{ id: "seed-1", type: "plainText", collapsed: false }];
+      return [{ id: "seed-1", type: "plainText", collapsed: false, text: "" }];
     }
 
-    return payload.items.map((item) => ({
-      id: item.id,
-      type: item.type,
-      collapsed: item.collapsed
-    }));
+    return payload.items.map((item) => {
+      if (item.type === "secret") {
+        return {
+          id: item.id,
+          type: item.type,
+          collapsed: item.collapsed,
+          key: item.key ?? "",
+          value: item.value ?? ""
+        };
+      }
+
+      return {
+        id: item.id,
+        type: item.type,
+        collapsed: item.collapsed,
+        text: item.text ?? ""
+      };
+    });
   } catch {
-    return [{ id: "seed-1", type: "plainText", collapsed: false }];
+    return [{ id: "seed-1", type: "plainText", collapsed: false, text: "" }];
   }
 }
 

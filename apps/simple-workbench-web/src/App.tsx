@@ -77,7 +77,10 @@ export function App() {
             items: items.map((item: NoteItem) => ({
               id: item.id,
               type: item.type,
-              collapsed: item.collapsed
+              collapsed: item.collapsed,
+              text: item.text,
+              key: item.key,
+              value: item.value
             }))
           });
 

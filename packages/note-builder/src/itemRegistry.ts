@@ -4,6 +4,9 @@ export type NoteItem = {
   id: string;
   type: NoteItemType;
   collapsed: boolean;
+  text?: string;
+  key?: string;
+  value?: string;
 };
 
 export const itemRegistry: Array<{ label: string; type: NoteItemType }> = [

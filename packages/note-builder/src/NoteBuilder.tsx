@@ -4,10 +4,21 @@ import { itemRegistry, type NoteItem, type NoteItemType } from "./itemRegistry";
 export type { NoteItem } from "./itemRegistry";
 
 function createItem(type: NoteItemType): NoteItem {
+  if (type === "secret") {
+    return {
+      id: `${type}-${crypto.randomUUID()}`,
+      type,
+      collapsed: false,
+      key: "",
+      value: ""
+    };
+  }
+
   return {
     id: `${type}-${crypto.randomUUID()}`,
     type,
-    collapsed: false
+    collapsed: false,
+    text: ""
   };
 }
 
@@ -54,6 +65,10 @@ export function NoteBuilder({ initialItems, onItemsChange }: NoteBuilderProps) {
     setMenuOpen(false);
   };
 
+  const updateItem = (id: string, patch: Partial<NoteItem>) => {
+    setItems((current) => current.map((item) => (item.id === id ? { ...item, ...patch } : item)));
+  };
+
   return (
     <section>
       <button type="button" onClick={() => setMenuOpen((open) => !open)}>
@@ -84,6 +99,39 @@ export function NoteBuilder({ initialItems, onItemsChange }: NoteBuilderProps) {
             Move Down
           </button>
           <span>{item.type}</span>
+          {!item.collapsed ? (
+            item.type === "secret" ? (
+              <div>
+                <label>
+                  Secret Key
+                  <input
+                    aria-label={`Secret Key ${item.id}`}
+                    type="text"
+                    value={item.key ?? ""}
+                    onChange={(event) => updateItem(item.id, { key: event.target.value })}
+                  />
+                </label>
+                <label>
+                  Secret Value
+                  <input
+                    aria-label={`Secret Value ${item.id}`}
+                    type="password"
+                    value={item.value ?? ""}
+                    onChange={(event) => updateItem(item.id, { value: event.target.value })}
+                  />
+                </label>
+              </div>
+            ) : (
+              <label>
+                Content
+                <textarea
+                  aria-label={`Content ${item.id}`}
+                  value={item.text ?? ""}
+                  onChange={(event) => updateItem(item.id, { text: event.target.value })}
+                />
+              </label>
+            )
+          ) : null}
         </article>
       ))}
     </section>
