@@ -6,9 +6,9 @@ import type { NoteItem } from "@simple-workbench/note-builder";
 
 const homeFixture: HomeDto = {
   spaces: [{ id: "s1", name: "Main Space" }],
-  savedNotes: [{ id: "n1", title: "Saved note" }],
-  recentNotes: [{ id: "n2", title: "Recent note" }],
-  globalNotes: [{ id: "n3", title: "Global note" }],
+  savedNotes: [{ id: "n1", title: "Saved note", preview: "Saved note preview" }],
+  recentNotes: [{ id: "n2", title: "Recent note", preview: "Recent note preview" }],
+  globalNotes: [{ id: "n3", title: "Global note", preview: "Global note preview" }],
   smartFilters: {
     hasSaved: true,
     tags: [],

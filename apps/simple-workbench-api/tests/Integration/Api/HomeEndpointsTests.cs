@@ -18,9 +18,9 @@ public class HomeEndpointsTests(TestApiFactory factory) : IClassFixture<TestApiF
 
         db.Spaces.Add(new SpaceRecord { Id = "s1", Name = "Main Space" });
         db.Notes.AddRange(
-            new NoteRecord { Id = "n1", Title = "Saved note", IsSaved = true, Version = 1 },
-            new NoteRecord { Id = "n2", Title = "Recent note", Version = 1, LastViewedAt = DateTimeOffset.UtcNow },
-            new NoteRecord { Id = "n3", Title = "Global note", SpaceId = null, Version = 1 });
+            new NoteRecord { Id = "n1", Title = "Saved note", IsSaved = true, SearchText = "saved preview text", Version = 1 },
+            new NoteRecord { Id = "n2", Title = "Recent note", SearchText = "recent preview text", Version = 1, LastViewedAt = DateTimeOffset.UtcNow },
+            new NoteRecord { Id = "n3", Title = "Global note", SpaceId = null, SearchText = "global preview text", Version = 1 });
         await db.SaveChangesAsync();
 
         var response = await _client.GetAsync("/api/home");
@@ -31,9 +31,12 @@ public class HomeEndpointsTests(TestApiFactory factory) : IClassFixture<TestApiF
         Assert.Contains(payload!.SavedNotes, x => x.Title == "Saved note");
         Assert.Contains(payload.RecentNotes, x => x.Title == "Recent note");
         Assert.Contains(payload.GlobalNotes, x => x.Title == "Global note");
+        Assert.Contains(payload.SavedNotes, x => x.Preview == "saved preview text");
+        Assert.Contains(payload.RecentNotes, x => x.Preview == "recent preview text");
+        Assert.Contains(payload.GlobalNotes, x => x.Preview == "global preview text");
     }
 
-    private sealed record HomeItem(string Id, string Title);
+    private sealed record HomeItem(string Id, string Title, string Preview);
     private sealed record HomeSpace(string Id, string Name);
     private sealed record HomeResponse(
         IReadOnlyList<HomeSpace> Spaces,

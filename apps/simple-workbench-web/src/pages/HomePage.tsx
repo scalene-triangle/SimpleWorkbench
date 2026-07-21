@@ -21,7 +21,10 @@ function SectionList({ title, items }: { title: string; items: HomeItem[] }) {
       ) : (
         <ul>
           {items.map((note) => (
-            <li key={note.id}>{note.title}</li>
+            <li key={note.id}>
+              <div>{note.title}</div>
+              {note.preview ? <p className="note-preview">{note.preview}</p> : null}
+            </li>
           ))}
         </ul>
       )}
@@ -79,6 +82,7 @@ export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePagePro
                     <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
                       {note.title}
                     </button>
+                    {note.preview ? <p className="note-preview">{note.preview}</p> : null}
                   </li>
                 ))}
               </ul>

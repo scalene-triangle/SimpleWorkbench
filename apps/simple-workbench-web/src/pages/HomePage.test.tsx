@@ -4,9 +4,9 @@ import { HomePage } from "./HomePage";
 
 const fixture = {
   spaces: [{ id: "s1", name: "Main Space" }],
-  savedNotes: [{ id: "n1", title: "Saved note" }],
-  recentNotes: [{ id: "n2", title: "Recent note" }],
-  globalNotes: [{ id: "n3", title: "Global note" }],
+  savedNotes: [{ id: "n1", title: "Saved note", preview: "Saved preview" }],
+  recentNotes: [{ id: "n2", title: "Recent note", preview: "Recent preview" }],
+  globalNotes: [{ id: "n3", title: "Global note", preview: "Global preview" }],
   smartFilters: {
     hasSaved: true,
     tags: [],
@@ -23,5 +23,7 @@ describe("HomePage", () => {
     expect(screen.getByText("Saved Notes")).toBeTruthy();
     expect(screen.getByText("Recent Notes")).toBeTruthy();
     expect(screen.getByText("Global Notes")).toBeTruthy();
+    expect(screen.getByText("Saved preview")).toBeTruthy();
+    expect(screen.getByText("Global preview")).toBeTruthy();
   });
 });

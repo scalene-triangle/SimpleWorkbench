@@ -1,5 +1,5 @@
 export type HomeSpace = { id: string; name: string };
-export type HomeItem = { id: string; title: string };
+export type HomeItem = { id: string; title: string; preview?: string };
 
 export type HomeDto = {
   spaces: HomeSpace[];

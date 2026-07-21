@@ -16,27 +16,33 @@ public static class HomeEndpoints
                 .Select(x => new HomeSpace(x.Id, x.Name))
                 .ToListAsync();
 
-            var savedNotes = await db.Notes
+            var savedNoteRows = await db.Notes
                 .Where(x => x.IsSaved)
                 .OrderBy(x => x.Title)
-                .Select(x => new HomeItem(x.Id, x.Title))
+                .Select(x => new { x.Id, x.Title, x.SearchText })
                 .ToListAsync();
+            var savedNotes = savedNoteRows
+                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText)))
+                .ToList();
 
             var recentNoteRows = await db.Notes
                 .Where(x => x.LastViewedAt != null)
-                .Select(x => new { x.Id, x.Title, x.LastViewedAt })
+                .Select(x => new { x.Id, x.Title, x.SearchText, x.LastViewedAt })
                 .ToListAsync();
             var recentNotes = recentNoteRows
                 .OrderByDescending(x => x.LastViewedAt)
-                .Select(x => new HomeItem(x.Id, x.Title))
+                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText)))
                 .Take(20)
                 .ToList();
 
-            var globalNotes = await db.Notes
+            var globalNoteRows = await db.Notes
                 .Where(x => x.SpaceId == null)
                 .OrderBy(x => x.Title)
-                .Select(x => new HomeItem(x.Id, x.Title))
+                .Select(x => new { x.Id, x.Title, x.SearchText })
                 .ToListAsync();
+            var globalNotes = globalNoteRows
+                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText)))
+                .ToList();
 
             var smartFilters = new SmartFiltersResponse(
                 HasSaved: savedNotes.Count > 0,
@@ -50,7 +56,18 @@ public static class HomeEndpoints
         return app;
     }
 
-    public sealed record HomeItem(string Id, string Title);
+    private static string BuildPreview(string searchText)
+    {
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            return string.Empty;
+        }
+
+        var trimmed = searchText.Trim();
+        return trimmed.Length <= 120 ? trimmed : $"{trimmed[..117]}...";
+    }
+
+    public sealed record HomeItem(string Id, string Title, string Preview);
     public sealed record HomeSpace(string Id, string Name);
     public sealed record HomeResponse(
         IReadOnlyList<HomeSpace> Spaces,
