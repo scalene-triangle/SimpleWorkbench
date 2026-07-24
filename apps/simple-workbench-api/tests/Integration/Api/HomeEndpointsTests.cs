@@ -34,9 +34,12 @@ public class HomeEndpointsTests(TestApiFactory factory) : IClassFixture<TestApiF
         Assert.Contains(payload.SavedNotes, x => x.Preview == "saved preview text");
         Assert.Contains(payload.RecentNotes, x => x.Preview == "recent preview text");
         Assert.Contains(payload.GlobalNotes, x => x.Preview == "global preview text");
+        Assert.Contains(payload.RecentNotes, x => x.LastViewedAt != null);
+        Assert.All(payload.SavedNotes, x => Assert.Null(x.LastViewedAt));
+        Assert.All(payload.GlobalNotes, x => Assert.Null(x.LastViewedAt));
     }
 
-    private sealed record HomeItem(string Id, string Title, string Preview);
+    private sealed record HomeItem(string Id, string Title, string Preview, DateTimeOffset? LastViewedAt);
     private sealed record HomeSpace(string Id, string Name);
     private sealed record HomeResponse(
         IReadOnlyList<HomeSpace> Spaces,

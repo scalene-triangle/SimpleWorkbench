@@ -22,7 +22,7 @@ public static class HomeEndpoints
                 .Select(x => new { x.Id, x.Title, x.SearchText })
                 .ToListAsync();
             var savedNotes = savedNoteRows
-                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText)))
+                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText), null))
                 .ToList();
 
             var recentNoteRows = await db.Notes
@@ -31,7 +31,7 @@ public static class HomeEndpoints
                 .ToListAsync();
             var recentNotes = recentNoteRows
                 .OrderByDescending(x => x.LastViewedAt)
-                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText)))
+                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText), x.LastViewedAt))
                 .Take(20)
                 .ToList();
 
@@ -41,7 +41,7 @@ public static class HomeEndpoints
                 .Select(x => new { x.Id, x.Title, x.SearchText })
                 .ToListAsync();
             var globalNotes = globalNoteRows
-                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText)))
+                .Select(x => new HomeItem(x.Id, x.Title, BuildPreview(x.SearchText), null))
                 .ToList();
 
             var smartFilters = new SmartFiltersResponse(
@@ -67,7 +67,7 @@ public static class HomeEndpoints
         return trimmed.Length <= 120 ? trimmed : $"{trimmed[..117]}...";
     }
 
-    public sealed record HomeItem(string Id, string Title, string Preview);
+    public sealed record HomeItem(string Id, string Title, string Preview, DateTimeOffset? LastViewedAt);
     public sealed record HomeSpace(string Id, string Name);
     public sealed record HomeResponse(
         IReadOnlyList<HomeSpace> Spaces,

@@ -6,8 +6,8 @@ import { HomePage } from "./HomePage";
 
 const fixture = {
   spaces: [{ id: "s1", name: "Main Space" }],
-  savedNotes: [{ id: "n1", title: "Saved note", preview: "Saved preview" }],
-  recentNotes: [{ id: "n2", title: "Recent note", preview: "Recent preview" }],
+  savedNotes: [{ id: "n1", title: "Saved note", preview: "Saved preview", lastViewedAt: null }],
+  recentNotes: [{ id: "n2", title: "Recent note", preview: "Recent preview", lastViewedAt: "2026-07-09T06:30:00Z" }],
   globalNotes: [{ id: "n3", title: "Global note", preview: "Global preview" }],
   smartFilters: {
     hasSaved: true,
@@ -27,6 +27,7 @@ describe("HomePage", () => {
     expect(screen.getByText("Global Notes")).toBeTruthy();
     expect(screen.getByText("Saved preview")).toBeTruthy();
     expect(screen.getByText("Global preview")).toBeTruthy();
+    expect(screen.getByText("Viewed recently")).toBeTruthy();
   });
 
   it("opens note from saved and recent sections", async () => {

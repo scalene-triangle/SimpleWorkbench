@@ -178,6 +178,16 @@ a {
   font-size: 13px;
 }
 
+.note-meta-badge {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 12px;
+}
+
 .app-loading {
   min-height: 100vh;
   display: grid;

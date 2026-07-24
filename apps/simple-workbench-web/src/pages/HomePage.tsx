@@ -15,11 +15,13 @@ type HomePageProps = {
 function SectionList({
   title,
   items,
-  onOpenNote
+  onOpenNote,
+  showLastViewed
 }: {
   title: string;
   items: HomeItem[];
   onOpenNote: (noteId: string) => void;
+  showLastViewed?: boolean;
 }) {
   return (
     <section className="content-card">
@@ -33,6 +35,7 @@ function SectionList({
               <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
                 {note.title}
               </button>
+              {showLastViewed && note.lastViewedAt ? <span className="note-meta-badge">Viewed recently</span> : null}
               {note.preview ? <p className="note-preview">{note.preview}</p> : null}
             </li>
           ))}
@@ -80,7 +83,7 @@ export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePagePro
             )}
           </section>
           <SectionList title="Saved Notes" items={data.savedNotes} onOpenNote={onOpenNote} />
-          <SectionList title="Recent Notes" items={data.recentNotes} onOpenNote={onOpenNote} />
+          <SectionList title="Recent Notes" items={data.recentNotes} onOpenNote={onOpenNote} showLastViewed />
           <section className="content-card">
             <h2>Global Notes</h2>
             {data.globalNotes.length === 0 ? (
