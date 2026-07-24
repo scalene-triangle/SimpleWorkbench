@@ -54,4 +54,23 @@ describe("HomePage", () => {
 
     expect(opened).toEqual(["n1", "n2"]);
   });
+
+  it("selects lexical search result", async () => {
+    const user = userEvent.setup();
+    const selected: string[] = [];
+
+    render(
+      <HomePage
+        data={fixture}
+        searchQuery="redis"
+        searchResults={[{ noteId: "n3", title: "Global note", score: 1.2, matchedItemId: "item-3" }]}
+        onCreateNote={() => undefined}
+        onOpenNote={() => undefined}
+        onSelectSearchResult={(item) => selected.push(item.noteId)}
+      />
+    );
+
+    await user.click(screen.getByTestId("search-result-n3"));
+    expect(selected).toEqual(["n3"]);
+  });
 });

@@ -18,7 +18,14 @@ public class LexicalSearchTests(TestApiFactory factory) : IClassFixture<TestApiF
         var db = scope.ServiceProvider.GetRequiredService<SimpleWorkbenchDbContext>();
 
         db.Notes.AddRange(
-            new NoteRecord { Id = "n1", Title = "Redis setup", SearchText = "setup guide", Version = 1 },
+            new NoteRecord
+            {
+                Id = "n1",
+                Title = "Redis setup",
+                SearchText = "setup guide",
+                DocumentJson = """{"items":[{"id":"item-3","type":"plainText","text":"redis setup guide"}]}""",
+                Version = 1
+            },
             new NoteRecord { Id = "n2", Title = "Caching notes", SearchText = "redis mentioned", Version = 1 });
         await db.SaveChangesAsync();
 
@@ -27,8 +34,9 @@ public class LexicalSearchTests(TestApiFactory factory) : IClassFixture<TestApiF
         Assert.NotNull(result);
         Assert.NotEmpty(result!.Items);
         Assert.Equal("n1", result.Items.First().NoteId);
+        Assert.Equal("item-3", result.Items.First().MatchedItemId);
     }
 
     private sealed record SearchResponse(IReadOnlyList<SearchItem> Items);
-    private sealed record SearchItem(string NoteId, string Title, double Score);
+    private sealed record SearchItem(string NoteId, string Title, double Score, string? MatchedItemId);
 }

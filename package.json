@@ -6,7 +6,7 @@
     "packages/*"
   ],
   "scripts": {
-    "test": "npm --prefix \"apps/simple-workbench-web\" run test && npm --prefix \"packages/note-builder\" run test"
+    "test": "npm --prefix \"apps/simple-workbench-web\" run test && npx vitest run packages/note-builder/src/NoteBuilder.test.tsx packages/note-builder/src/items/SecretItem.test.tsx --environment jsdom"
   },
   "dependencies": {
     "@playwright/test": "^1.61.1",

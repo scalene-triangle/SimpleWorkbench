@@ -88,7 +88,7 @@ export function NoteBuilder({ initialItems, onItemsChange }: NoteBuilderProps) {
       ) : null}
 
       {items.map((item) => (
-        <article data-testid="note-item" key={item.id}>
+        <article data-testid="note-item" data-item-id={item.id} key={item.id}>
           <button type="button" onClick={() => toggleCollapsed(item.id)}>
             {item.collapsed ? "Expand" : "Collapse"}
           </button>

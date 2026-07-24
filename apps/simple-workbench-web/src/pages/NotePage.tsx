@@ -2,12 +2,15 @@ import { NoteBuilder } from "@simple-workbench/note-builder";
 import { useEffect, useMemo, useState } from "react";
 import type { NoteDto } from "../api";
 import type { NoteItem } from "@simple-workbench/note-builder";
+import { jumpToMatchedItem } from "../features/search/useSearchResults";
 
 type NotePageProps = {
   note: NoteDto;
   onBack: () => void;
   onSave: (title: string, items: NoteItem[]) => Promise<void>;
   onToggleSaved: (isSaved: boolean) => Promise<void>;
+  pendingJumpItemId?: string | null;
+  onJumpHandled?: () => void;
 };
 
 function parseItems(documentJson: string): NoteItem[] {
@@ -40,7 +43,7 @@ function parseItems(documentJson: string): NoteItem[] {
   }
 }
 
-export function NotePage({ note, onBack, onSave, onToggleSaved }: NotePageProps) {
+export function NotePage({ note, onBack, onSave, onToggleSaved, pendingJumpItemId, onJumpHandled }: NotePageProps) {
   const [title, setTitle] = useState(note.title);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -52,6 +55,19 @@ export function NotePage({ note, onBack, onSave, onToggleSaved }: NotePageProps)
     setTitle(note.title);
     setItems(parseItems(note.documentJson));
   }, [note.id, note.title, note.documentJson]);
+
+  useEffect(() => {
+    if (!pendingJumpItemId) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      jumpToMatchedItem(pendingJumpItemId);
+      onJumpHandled?.();
+    }, 0);
+
+    return () => clearTimeout(timer);
+  }, [pendingJumpItemId, onJumpHandled]);
 
   const handleSave = async () => {
     setSaving(true);

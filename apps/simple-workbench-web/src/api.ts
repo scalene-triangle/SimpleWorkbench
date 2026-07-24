@@ -14,6 +14,17 @@ export type HomeDto = {
   };
 };
 
+export type SearchResultItem = {
+  noteId: string;
+  title: string;
+  score: number;
+  matchedItemId?: string | null;
+};
+
+export type LexicalSearchResponse = {
+  items: SearchResultItem[];
+};
+
 export type NoteDto = {
   id: string;
   title: string;
@@ -34,6 +45,19 @@ async function parseJson<T>(response: Response): Promise<T> {
 export async function getHome(): Promise<HomeDto> {
   const response = await fetch("/api/home", { headers: { Accept: "application/json" } });
   return parseJson<HomeDto>(response);
+}
+
+export async function searchLexical(query: string): Promise<SearchResultItem[]> {
+  const q = query.trim();
+  if (!q) {
+    return [];
+  }
+
+  const response = await fetch(`/api/search/lexical?q=${encodeURIComponent(q)}`, {
+    headers: { Accept: "application/json" }
+  });
+  const payload = await parseJson<LexicalSearchResponse>(response);
+  return payload.items;
 }
 
 export async function createNote(title: string): Promise<NoteDto> {

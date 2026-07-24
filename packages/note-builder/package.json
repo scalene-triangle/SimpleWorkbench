@@ -5,6 +5,6 @@
   "type": "module",
   "main": "./src/NoteBuilder.tsx",
   "scripts": {
-    "test": "vitest run --environment jsdom"
+    "test": "npx vitest run --environment jsdom"
   }
 }

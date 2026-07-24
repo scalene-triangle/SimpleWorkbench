@@ -218,6 +218,27 @@ a {
   font-size: 12px;
 }
 
+.search-input {
+  width: 100%;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
+  font: inherit;
+}
+
+.search-results {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.highlight {
+  outline: 2px solid #60a5fa;
+  outline-offset: 2px;
+  border-radius: 6px;
+  transition: outline-color 0.3s ease;
+}
+
 .app-loading {
   min-height: 100vh;
   display: grid;

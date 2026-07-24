@@ -1,25 +1,55 @@
 import { expect, test } from "@playwright/test";
 
 test("search result click jumps to matched item", async ({ page }) => {
-  await page.setContent(`
-    <main>
-      <input data-testid="global-search" />
-      <button
-        data-testid="search-result-n1"
-        onclick="
-          const el = document.querySelector('[data-item-id=\\'item-3\\']');
-          el.scrollIntoView({ behavior: 'auto', block: 'center' });
-          el.classList.add('highlight');
-        "
-      >
-        Result N1
-      </button>
-      <article data-item-id="item-3">Target item</article>
-    </main>
-  `);
+  const note = {
+    id: "n1",
+    title: "Redis setup",
+    version: 1,
+    searchText: "redis setup guide",
+    isSaved: false,
+    documentJson: JSON.stringify({
+      items: [
+        { id: "item-1", type: "plainText", collapsed: false, text: "intro" },
+        { id: "item-3", type: "plainText", collapsed: false, text: "redis setup guide" }
+      ]
+    })
+  };
 
+  await page.route("**/api/home", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        spaces: [{ id: "s1", name: "Main Space" }],
+        savedNotes: [],
+        recentNotes: [],
+        globalNotes: [{ id: "n1", title: "Redis setup", preview: "redis setup guide" }],
+        smartFilters: { hasSaved: false, tags: [], priorities: [], statuses: [] }
+      })
+    });
+  });
+
+  await page.route("**/api/search/lexical?*", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        items: [{ noteId: "n1", title: "Redis setup", score: 2.5, matchedItemId: "item-3" }]
+      })
+    });
+  });
+
+  await page.route("**/api/notes/n1", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(note)
+    });
+  });
+
+  await page.goto("/");
   await page.fill('[data-testid="global-search"]', "redis");
+  await page.waitForSelector('[data-testid="search-result-n1"]');
   await page.click('[data-testid="search-result-n1"]');
-
   await expect(page.locator('[data-item-id="item-3"]')).toHaveClass(/highlight/);
 });

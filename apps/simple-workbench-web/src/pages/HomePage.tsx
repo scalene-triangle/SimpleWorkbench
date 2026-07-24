@@ -1,7 +1,7 @@
 import { TopNav } from "../components/nav/TopNav";
 import { ManualTree } from "../components/sidebar/ManualTree";
 import { SmartFilters } from "../components/sidebar/SmartFilters";
-import type { HomeDto, HomeItem } from "../api";
+import type { HomeDto, HomeItem, SearchResultItem } from "../api";
 
 export type HomePageData = HomeDto;
 
@@ -10,6 +10,11 @@ type HomePageProps = {
   notice?: string | null;
   onCreateNote: () => void;
   onOpenNote: (noteId: string) => void;
+  searchQuery?: string;
+  searchResults?: SearchResultItem[];
+  searchLoading?: boolean;
+  onSearchQueryChange?: (query: string) => void;
+  onSelectSearchResult?: (result: SearchResultItem) => void;
 };
 
 function formatViewedAgo(lastViewedAt: string): string {
@@ -84,7 +89,17 @@ function SectionList({
   );
 }
 
-export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePageProps) {
+export function HomePage({
+  data,
+  notice,
+  onCreateNote,
+  onOpenNote,
+  searchQuery = "",
+  searchResults = [],
+  searchLoading = false,
+  onSearchQueryChange,
+  onSelectSearchResult
+}: HomePageProps) {
   return (
     <div className="app-shell">
       <TopNav onCreateNote={onCreateNote} />
@@ -109,6 +124,36 @@ export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePagePro
               {notice}
             </div>
           ) : null}
+          <section className="content-card">
+            <h2>Global Search</h2>
+            <input
+              className="search-input"
+              data-testid="global-search"
+              placeholder="Search notes..."
+              value={searchQuery}
+              onChange={(event) => onSearchQueryChange?.(event.target.value)}
+            />
+            {searchLoading ? <p className="empty-text">Searching...</p> : null}
+            {searchQuery.trim().length > 0 && !searchLoading && searchResults.length === 0 ? (
+              <p className="empty-text">No matching notes found.</p>
+            ) : null}
+            {searchResults.length > 0 ? (
+              <ul className="search-results">
+                {searchResults.map((result) => (
+                  <li key={result.noteId}>
+                    <button
+                      type="button"
+                      className="text-link-button"
+                      data-testid={`search-result-${result.noteId}`}
+                      onClick={() => onSelectSearchResult?.(result)}
+                    >
+                      {result.title}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : null}
+          </section>
           <section className="content-card">
             <h2>Spaces</h2>
             {data.spaces.length === 0 ? (

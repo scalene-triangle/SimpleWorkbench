@@ -3,6 +3,7 @@ import { createNote, getHome, getNote, updateNote, updateSaved, type HomeDto, ty
 import { HomePage, type HomePageData } from "./pages/HomePage";
 import { NotePage } from "./pages/NotePage";
 import type { NoteItem } from "@simple-workbench/note-builder";
+import { useSearchResults } from "./features/search/useSearchResults";
 
 const homeFixture: HomeDto = {
   spaces: [{ id: "s1", name: "Main Space" }],
@@ -26,6 +27,8 @@ export function App() {
   const [view, setView] = useState<ViewState>({ type: "home" });
   const [note, setNote] = useState<NoteDto | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [pendingJumpItemId, setPendingJumpItemId] = useState<string | null>(null);
+  const { query, results, loading, setQuery } = useSearchResults();
 
   const loadHome = async () => {
     try {
@@ -40,10 +43,11 @@ export function App() {
     }
   };
 
-  const loadNote = async (noteId: string) => {
+  const loadNote = async (noteId: string, matchedItemId?: string | null) => {
     try {
       const payload = await getNote(noteId);
       setNote(payload);
+      setPendingJumpItemId(matchedItemId ?? null);
       setMessage(null);
       setView({ type: "note", noteId });
     } catch {
@@ -97,6 +101,8 @@ export function App() {
           setNote(updated);
           await loadHome();
         }}
+        pendingJumpItemId={pendingJumpItemId}
+        onJumpHandled={() => setPendingJumpItemId(null)}
       />
     );
   }
@@ -116,6 +122,13 @@ export function App() {
       }}
       onOpenNote={(noteId) => {
         void loadNote(noteId);
+      }}
+      searchQuery={query}
+      searchResults={results}
+      searchLoading={loading}
+      onSearchQueryChange={setQuery}
+      onSelectSearchResult={(result) => {
+        void loadNote(result.noteId, result.matchedItemId);
       }}
     />
   );
