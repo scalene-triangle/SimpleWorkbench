@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { HomePage } from "./HomePage";
 
 const fixture = {
@@ -19,15 +19,22 @@ const fixture = {
 
 describe("HomePage", () => {
   it("renders global sections and fixed top nav", () => {
-    render(<HomePage data={fixture} onCreateNote={() => undefined} onOpenNote={() => undefined} />);
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-07-09T07:30:00Z"));
 
-    expect(screen.getByRole("navigation")).toBeTruthy();
-    expect(screen.getByText("Saved Notes")).toBeTruthy();
-    expect(screen.getByText("Recent Notes")).toBeTruthy();
-    expect(screen.getByText("Global Notes")).toBeTruthy();
-    expect(screen.getByText("Saved preview")).toBeTruthy();
-    expect(screen.getByText("Global preview")).toBeTruthy();
-    expect(screen.getByText("Viewed recently")).toBeTruthy();
+    try {
+      render(<HomePage data={fixture} onCreateNote={() => undefined} onOpenNote={() => undefined} />);
+
+      expect(screen.getByRole("navigation")).toBeTruthy();
+      expect(screen.getByText("Saved Notes")).toBeTruthy();
+      expect(screen.getByText("Recent Notes")).toBeTruthy();
+      expect(screen.getByText("Global Notes")).toBeTruthy();
+      expect(screen.getByText("Saved preview")).toBeTruthy();
+      expect(screen.getByText("Global preview")).toBeTruthy();
+      expect(screen.getByText("Viewed 1h ago")).toBeTruthy();
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("opens note from saved and recent sections", async () => {

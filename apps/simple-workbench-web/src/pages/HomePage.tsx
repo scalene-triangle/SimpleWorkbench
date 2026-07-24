@@ -12,6 +12,36 @@ type HomePageProps = {
   onOpenNote: (noteId: string) => void;
 };
 
+function formatViewedAgo(lastViewedAt: string): string {
+  const viewedAt = new Date(lastViewedAt);
+  if (Number.isNaN(viewedAt.getTime())) {
+    return "Viewed recently";
+  }
+
+  const diffMs = Math.max(0, Date.now() - viewedAt.getTime());
+  const minutes = Math.floor(diffMs / 60_000);
+
+  if (minutes < 1) {
+    return "Viewed just now";
+  }
+
+  if (minutes < 60) {
+    return `Viewed ${minutes}m ago`;
+  }
+
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) {
+    return `Viewed ${hours}h ago`;
+  }
+
+  const days = Math.floor(hours / 24);
+  if (days < 7) {
+    return `Viewed ${days}d ago`;
+  }
+
+  return "Viewed over a week ago";
+}
+
 function SectionList({
   title,
   items,
@@ -35,7 +65,9 @@ function SectionList({
               <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
                 {note.title}
               </button>
-              {showLastViewed && note.lastViewedAt ? <span className="note-meta-badge">Viewed recently</span> : null}
+              {showLastViewed && note.lastViewedAt ? (
+                <span className="note-meta-badge">{formatViewedAgo(note.lastViewedAt)}</span>
+              ) : null}
               {note.preview ? <p className="note-preview">{note.preview}</p> : null}
             </li>
           ))}
