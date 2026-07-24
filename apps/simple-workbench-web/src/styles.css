@@ -188,6 +188,36 @@ a {
   font-size: 12px;
 }
 
+.note-row {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 8px 10px;
+  margin-bottom: 8px;
+  background: #ffffff;
+}
+
+.note-row:hover,
+.note-row:focus-within {
+  border-color: #93c5fd;
+  box-shadow: 0 0 0 2px #dbeafe;
+}
+
+.note-row__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.note-row__title {
+  text-align: left;
+}
+
+.note-open-hint {
+  color: #6b7280;
+  font-size: 12px;
+}
+
 .app-loading {
   min-height: 100vh;
   display: grid;

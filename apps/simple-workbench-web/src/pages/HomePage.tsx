@@ -61,13 +61,20 @@ function SectionList({
       ) : (
         <ul>
           {items.map((note) => (
-            <li key={note.id}>
-              <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
-                {note.title}
-              </button>
-              {showLastViewed && note.lastViewedAt ? (
-                <span className="note-meta-badge">{formatViewedAgo(note.lastViewedAt)}</span>
-              ) : null}
+            <li key={note.id} className="note-row">
+              <div className="note-row__header">
+                <button
+                  className="text-link-button note-row__title"
+                  type="button"
+                  onClick={() => onOpenNote(note.id)}
+                >
+                  {note.title}
+                </button>
+                <span className="note-open-hint" aria-hidden="true">
+                  Open
+                </span>
+              </div>
+              {showLastViewed && note.lastViewedAt ? <span className="note-meta-badge">{formatViewedAgo(note.lastViewedAt)}</span> : null}
               {note.preview ? <p className="note-preview">{note.preview}</p> : null}
             </li>
           ))}
@@ -123,10 +130,15 @@ export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePagePro
             ) : (
               <ul>
                 {data.globalNotes.map((note) => (
-                  <li key={note.id}>
-                    <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
-                      {note.title}
-                    </button>
+                  <li key={note.id} className="note-row">
+                    <div className="note-row__header">
+                      <button className="text-link-button note-row__title" type="button" onClick={() => onOpenNote(note.id)}>
+                        {note.title}
+                      </button>
+                      <span className="note-open-hint" aria-hidden="true">
+                        Open
+                      </span>
+                    </div>
                     {note.preview ? <p className="note-preview">{note.preview}</p> : null}
                   </li>
                 ))}

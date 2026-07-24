@@ -32,6 +32,7 @@ describe("HomePage", () => {
       expect(screen.getByText("Saved preview")).toBeTruthy();
       expect(screen.getByText("Global preview")).toBeTruthy();
       expect(screen.getByText("Viewed 1h ago")).toBeTruthy();
+      expect(screen.getAllByText("Open").length).toBeGreaterThan(0);
     } finally {
       vi.useRealTimers();
     }
