@@ -12,7 +12,15 @@ type HomePageProps = {
   onOpenNote: (noteId: string) => void;
 };
 
-function SectionList({ title, items }: { title: string; items: HomeItem[] }) {
+function SectionList({
+  title,
+  items,
+  onOpenNote
+}: {
+  title: string;
+  items: HomeItem[];
+  onOpenNote: (noteId: string) => void;
+}) {
   return (
     <section className="content-card">
       <h2>{title}</h2>
@@ -22,7 +30,9 @@ function SectionList({ title, items }: { title: string; items: HomeItem[] }) {
         <ul>
           {items.map((note) => (
             <li key={note.id}>
-              <div>{note.title}</div>
+              <button className="text-link-button" type="button" onClick={() => onOpenNote(note.id)}>
+                {note.title}
+              </button>
               {note.preview ? <p className="note-preview">{note.preview}</p> : null}
             </li>
           ))}
@@ -69,8 +79,8 @@ export function HomePage({ data, notice, onCreateNote, onOpenNote }: HomePagePro
               </ul>
             )}
           </section>
-          <SectionList title="Saved Notes" items={data.savedNotes} />
-          <SectionList title="Recent Notes" items={data.recentNotes} />
+          <SectionList title="Saved Notes" items={data.savedNotes} onOpenNote={onOpenNote} />
+          <SectionList title="Recent Notes" items={data.recentNotes} onOpenNote={onOpenNote} />
           <section className="content-card">
             <h2>Global Notes</h2>
             {data.globalNotes.length === 0 ? (
